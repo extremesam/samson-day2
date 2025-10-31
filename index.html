@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nigerian Movement Map (Roads, Rivers, Rail)</title>
+    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+         integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+         crossorigin=""/>
+    
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+         crossorigin=""></script>
+    
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+        #map {
+            height: 100vh;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="map"></div>
+
+    <script>
+        // 5. Initialize the map and center it on Nigeria
+        var map = L.map('map').setView([8.5, 7.5], 6);
+
+        // 6. Add a tile layer (base map)
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        // --- 7. Sample GeoJSON Data for demonstration ---
+        // **NOTE:** In a real-world application, you would load massive, actual GeoJSON data
+        // from external files or a server using L.geoJSON.
+        
+        // Hypothetical Major River (e.g., River Niger segment)
+        var riverLine = {
+            "type": "LineString",
+            "coordinates": [
+                [4.5, 9.5], [6.0, 9.0], [7.0, 8.0], [9.0, 7.5], [10.0, 6.0] // [Lon, Lat]
+            ]
+        };
+
+        // Hypothetical Major Road (e.g., Lagos to Kano route segment)
+        var roadLine = {
+            "type": "LineString",
+            "coordinates": [
+                [3.5, 6.5], [4.0, 7.5], [7.0, 9.5], [8.0, 10.0], [9.5, 12.0] // [Lon, Lat]
+            ]
+        };
+
+        // Hypothetical Rail Line (e.g., Coastal Rail segment)
+        var railLine = {
+            "type": "LineString",
+            "coordinates": [
+                [6.0, 5.0], [7.0, 5.5], [8.5, 5.0] // [Lon, Lat]
+            ]
+        };
+
+        // --- 8. Define Layer Styles and GeoJSON Objects ---
+        
+        // Layer 1: Rivers (Blue, thick, for water movement)
+        var riversLayer = L.geoJSON(riverLine, {
+            style: {
+                color: "#1f78b4", // Blue
+                weight: 4,
+                opacity: 0.8
+            },
+            // Add a simple popup to the line
+            onEachFeature: function(feature, layer) {
+                layer.bindPopup("Major **River** Route (Simulated)");
+            }
+        });
+        // Rivers layer is OFF by default, so we don't add it to the map yet.
+
+        // Layer 2: Roads (Red, medium thickness, for vehicle movement)
+        var roadsLayer = L.geoJSON(roadLine, {
+            style: {
+                color: "#e31a1c", // Red
+                weight: 3,
+                opacity: 0.8
+            },
+            onEachFeature: function(feature, layer) {
+                layer.bindPopup("Major **Road** Network (Simulated)");
+            }
+        }).addTo(map); // Roads layer is ON by default
+
+        // Layer 3: Rail Lines (Black, dashed, for rail movement)
+        var railLayer = L.geoJSON(railLine, {
+            style: {
+                color: "#333333", // Dark Gray/Black
+                weight: 5,
+                opacity: 0.9,
+                dashArray: '10, 5' // Dashed line for rail
+            },
+            onEachFeature: function(feature, layer) {
+                layer.bindPopup("Major **Rail** Line (Simulated)");
+            }
+        });
+        // Rail layer is OFF by default, so we don't add it to the map yet.
+
+        // --- 9. Create the Layer Control ---
+        
+        var baseMaps = {
+            "OpenStreetMap": L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png')
+        };
+
+        var overlayMaps = {
+            "**Road Network** (Simulated)": roadsLayer,
+            "**River Systems** (Simulated)": riversLayer,
+            "**Rail Lines** (Simulated)": railLayer
+        };
+
+        // Add the control to the map
+        L.control.layers(baseMaps, overlayMaps).addTo(map);
+
+    </script>
+
+</body>
+</html>
